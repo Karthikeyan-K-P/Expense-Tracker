@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Home Expense Tracker</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<!-- jsPDF & AutoTable -->
+	<script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.8.4/dist/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+	<header class="app-header">
+		<h1>Home Expense Tracker</h1>
+		<nav class="tabs">
+			<button class="tab-btn active" data-tab="menu">Menu</button>
+			<button class="tab-btn" data-tab="transactions">Transactions</button>
+		</nav>
+	</header>
+
+	<main class="container">
+		<section id="tab-menu" class="tab-panel active">
+			<div class="panel-header">
+				<h2>Monthly Expense Menu</h2>
+				<div class="panel-actions">
+					<button id="open-add-item" class="btn primary">+ Add Menu Item</button>
+				</div>
+			</div>
+			<div id="menu-grid" class="card-grid"></div>
+		</section>
+
+		<section id="tab-transactions" class="tab-panel">
+			<div class="panel-header sticky">
+				<h2>Transactions</h2>
+				<div class="panel-actions wrap">
+					<label class="month-picker">
+						<span>Month</span>
+						<input type="month" id="tx-month" />
+					</label>
+					<button id="btn-generate-report" class="btn">Generate Report</button>
+					<button id="btn-export-pdf" class="btn primary">Export PDF</button>
+					<button id="btn-clear-month" class="btn danger">Clear This Month</button>
+				</div>
+			</div>
+			<div id="transactions-area">
+				<div id="transactions-empty" class="empty-state hidden">
+					<p>No transactions for this month yet.</p>
+				</div>
+				<div class="table-responsive">
+					<table class="table" id="transactions-table">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>Item</th>
+								<th>Unit (Rs.)</th>
+								<th>Qty</th>
+								<th>Total (Rs.)</th>
+								<th>Date</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody id="transactions-tbody"></tbody>
+						<tfoot>
+							<tr>
+								<td colspan="4" class="text-right">Grand Total</td>
+								<td id="grand-total">0</td>
+								<td colspan="2"></td>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+			</div>
+			<div id="report-view" class="report-view hidden"></div>
+		</section>
+	</main>
+
+	<!-- Add/Edit Item Modal -->
+	<div id="item-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="item-modal-title">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 id="item-modal-title">Add Menu Item</h3>
+				<button class="icon-btn" id="item-modal-close" aria-label="Close">✕</button>
+			</div>
+			<form id="item-form" class="form">
+				<input type="hidden" id="item-id" />
+				<label>
+					<span>Name</span>
+					<input id="item-name" type="text" required placeholder="e.g., Groceries" />
+				</label>
+				<label>
+					<span>Cost (Rs.)</span>
+					<input id="item-amount" type="number" min="0" step="1" required placeholder="e.g., 500" />
+				</label>
+				<label>
+					<span>Image URL (optional)</span>
+					<input id="item-image" type="url" placeholder="https://..." />
+				</label>
+				<div class="form-actions">
+					<button type="button" class="btn" id="item-cancel">Cancel</button>
+					<button type="submit" class="btn primary" id="item-save">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<!-- Confirm Modal -->
+	<div id="confirm-modal" class="modal hidden" aria-hidden="true" role="dialog" aria-labelledby="confirm-title">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h3 id="confirm-title">Confirm</h3>
+				<button class="icon-btn" id="confirm-close" aria-label="Close">✕</button>
+			</div>
+			<div class="modal-body" id="confirm-message">Are you sure?</div>
+			<div class="form-actions">
+				<button class="btn" id="confirm-cancel">Cancel</button>
+				<button class="btn danger" id="confirm-ok">Yes</button>
+			</div>
+		</div>
+	</div>
+
+	<footer class="app-footer">
+		<p>Made for home use. Data stored locally in your browser.</p>
+	</footer>
+
+	<script src="app.js"></script>
+</body>
+</html>
+
+
