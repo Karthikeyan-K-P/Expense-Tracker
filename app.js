@@ -36,6 +36,15 @@ if (!Array.isArray(transactions)) {
 	storage.set('transactions', transactions);
 }
 
+// Theme preference
+const THEME_KEY = 'themePref';
+function applyTheme(theme) {
+	document.documentElement.setAttribute('data-theme', theme === 'dark' ? 'dark' : 'light');
+}
+const storedTheme = storage.get(THEME_KEY, null);
+const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+applyTheme(storedTheme ?? (prefersDark ? 'dark' : 'light'));
+
 // DOM refs
 const tabs = document.querySelectorAll('.tab-btn');
 const panels = {
@@ -44,6 +53,7 @@ const panels = {
 };
 const menuGrid = document.getElementById('menu-grid');
 const openAddItemBtn = document.getElementById('open-add-item');
+const themeToggle = document.getElementById('theme-toggle');
 
 const txMonthInput = document.getElementById('tx-month');
 const txTbody = document.getElementById('transactions-tbody');
@@ -81,6 +91,20 @@ tabs.forEach(btn => {
 		panels[tab].classList.add('active');
 	});
 });
+
+// Theme toggle
+function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+function updateThemeToggleIcon() {
+	if (!themeToggle) return;
+	themeToggle.textContent = currentTheme() === 'dark' ? '🌞' : '🌙';
+}
+themeToggle?.addEventListener('click', () => {
+	const next = currentTheme() === 'dark' ? 'light' : 'dark';
+	applyTheme(next);
+	storage.set(THEME_KEY, next);
+	updateThemeToggleIcon();
+});
+updateThemeToggleIcon();
 
 // Month default
 const now = new Date();

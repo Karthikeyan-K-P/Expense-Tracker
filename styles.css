@@ -1,13 +1,31 @@
 :root {
-	--bg: #f5f9ff;
-	--card: #ffffff;
+	--bg: #eaf3ff;
+	--bg-gradient: linear-gradient(135deg, rgba(45,140,255,0.12), rgba(255,255,255,0.6));
+	--card: rgba(255,255,255,0.85);
+	--card-blur: saturate(160%) blur(10px);
 	--text: #0b1b2b;
 	--muted: #5b6b7b;
 	--primary: #2d8cff;
 	--primary-600: #1f6fd1;
 	--danger: #e04545;
-	--border: #d7e3f3;
-	--accent: #e8f1ff;
+	--border: #cfe0f7;
+	--accent: rgba(45,140,255,0.10);
+	--shadow: 0 8px 30px rgba(29,78,216,0.15);
+}
+
+[data-theme="dark"] {
+	--bg: #0b1522;
+	--bg-gradient: radial-gradient(1200px 600px at 10% 10%, rgba(45,140,255,0.18), transparent 60%), radial-gradient(1000px 500px at 90% 20%, rgba(168,85,247,0.15), transparent 60%), #0b1522;
+	--card: rgba(16,26,40,0.7);
+	--card-blur: saturate(180%) blur(14px);
+	--text: #e6eef7;
+	--muted: #9db0c6;
+	--primary: #5aa8ff;
+	--primary-600: #3d86df;
+	--danger: #ff6b6b;
+	--border: rgba(255,255,255,0.12);
+	--accent: rgba(90,168,255,0.12);
+	--shadow: 0 8px 30px rgba(2,6,23,0.5);
 }
 
 * { box-sizing: border-box; }
@@ -17,20 +35,27 @@ body {
 	font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
 	color: var(--text);
 	background: var(--bg);
+	background-image: var(--bg-gradient);
+	min-height: 100vh;
+	transition: background-color .4s ease, color .3s ease;
 }
 
 .app-header {
 	position: sticky;
 	top: 0;
-	background: linear-gradient(180deg, #dfeeff 0%, #f5f9ff 100%);
+	background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.3) 100%);
+	backdrop-filter: var(--card-blur);
 	border-bottom: 1px solid var(--border);
 	padding: 12px 16px;
 	z-index: 20;
 }
+.header-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .app-header h1 {
 	margin: 0 0 8px 0;
 	font-size: 20px;
+    letter-spacing: .2px;
 }
+.header-actions { display: flex; gap: 8px; align-items: center; }
 
 .tabs { display: flex; gap: 8px; }
 .tab-btn {
@@ -42,12 +67,15 @@ body {
 	cursor: pointer;
 	color: var(--muted);
 	font-weight: 600;
+	transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
 }
 .tab-btn.active {
 	background: var(--primary);
 	color: white;
 	border-color: var(--primary);
+	box-shadow: var(--shadow);
 }
+.tab-btn:hover { transform: translateY(-1px); }
 
 .container { padding: 16px; max-width: 1200px; margin: 0 auto; }
 .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
@@ -64,11 +92,15 @@ body {
 	cursor: pointer;
 	font-weight: 600;
 	color: var(--text);
+	transition: transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease, border-color .2s ease;
 }
 .btn.primary { background: var(--primary); color: white; border-color: var(--primary); }
 .btn.primary:hover { background: var(--primary-600); }
 .btn.danger { background: var(--danger); color: white; border-color: var(--danger); }
+.btn.ghost { background: transparent; border-color: var(--border); color: var(--text); }
+.btn:hover { transform: translateY(-1px); box-shadow: var(--shadow); }
 .icon-btn { border: none; background: transparent; cursor: pointer; font-size: 16px; color: var(--muted); }
+.icon-btn:hover { transform: scale(1.06); }
 
 .tab-panel { display: none; }
 .tab-panel.active { display: block; }
@@ -84,6 +116,10 @@ body {
 	overflow: hidden;
 	display: flex;
 	flex-direction: column;
+	backdrop-filter: var(--card-blur);
+	box-shadow: var(--shadow);
+	transform: translateZ(0);
+	transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .3s ease;
 }
 .card-img { width: 100%; height: 140px; object-fit: cover; background: var(--accent); }
 .card-body { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
@@ -91,6 +127,7 @@ body {
 .card-title h3 { margin: 0; font-size: 16px; }
 .price { color: var(--primary-600); font-weight: 700; }
 .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.card:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(2,6,23,0.18); }
 
 .form { display: grid; gap: 10px; }
 .form label { display: grid; gap: 6px; font-weight: 600; color: var(--muted); }
@@ -101,26 +138,39 @@ body {
 	position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: rgba(11,27,43,0.35);
 }
 .modal.hidden { display: none; }
-.modal-content { width: min(520px, 92vw); background: var(--card); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+.modal-content { width: min(520px, 92vw); background: var(--card); backdrop-filter: var(--card-blur); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow); animation: pop .18s ease-out; }
 .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-bottom: 1px solid var(--border); }
 .modal-body { padding: 12px; color: var(--text); }
 
-.table-responsive { overflow-x: auto; background: var(--card); border: 1px solid var(--border); border-radius: 14px; }
+.table-responsive { overflow-x: auto; background: var(--card); backdrop-filter: var(--card-blur); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
 .table { width: 100%; border-collapse: collapse; }
 .table th, .table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
 .table tfoot td { font-weight: 700; }
 .text-right { text-align: right; }
 
-.empty-state { background: var(--accent); border: 1px dashed var(--border); padding: 16px; border-radius: 12px; }
+.empty-state { background: var(--accent); border: 1px dashed var(--border); padding: 16px; border-radius: 12px; animation: fadeIn .25s ease-out; }
 .hidden { display: none; }
 
 .month-picker { display: flex; align-items: center; gap: 8px; font-weight: 600; color: var(--muted); }
 
 .app-footer { text-align: center; color: var(--muted); padding: 24px; }
 
-.report-view { margin-top: 16px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px; }
+.report-view { margin-top: 16px; background: var(--card); backdrop-filter: var(--card-blur); border: 1px solid var(--border); border-radius: 14px; padding: 16px; box-shadow: var(--shadow); animation: slideUp .25s ease-out; }
 .report-view h3 { margin-top: 0; }
 
 input[type=number] { width: 110px; }
+
+@keyframes fadeIn {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+@keyframes slideUp {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pop {
+	from { opacity: 0; transform: scale(.98); }
+	to { opacity: 1; transform: scale(1); }
+}
 
 
